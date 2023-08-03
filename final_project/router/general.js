@@ -20,16 +20,16 @@ public_users.get('/', function (req, res) {
 public_users.get('/isbn/:isbn', function (req, res) {
     //Write your code here
     const isbn = req.params.isbn;
-    let found_books = [];
+    let book = null;
 
     Object.keys(books).forEach(key => {
         if (key == isbn) {
-            found_books.push(books[key]);
+            book = books[key];
         }
     });
     
-    if(found_books.length > 0) {
-        return res.status(200).json(found_books[0]);
+    if(book != null) {
+        return res.status(200).json(book);
     } else {
         return res.status(404).json({ message: "No item found!" });
     }
@@ -38,13 +38,47 @@ public_users.get('/isbn/:isbn', function (req, res) {
 // Get book details based on author
 public_users.get('/author/:author', function (req, res) {
     //Write your code here
-    return res.status(300).json({ message: "Yet to be implemented" });
+    const author = req.params.author;
+    let works = { "booksbyauthor": [] };
+
+    Object.keys(books).forEach(key => {
+        if (books[key].author == author) {
+            works.booksbyauthor.push({
+                "isbn": key,
+                "title": books[key].title,
+                "reviews": books[key].reviews
+            });
+        }
+    });
+    
+    if(works.booksbyauthor.length > 0) {
+        return res.status(200).json(works);
+    } else {
+        return res.status(404).json({ message: "No item found!" });
+    }
 });
 
 // Get all books based on title
 public_users.get('/title/:title', function (req, res) {
     //Write your code here
-    return res.status(300).json({ message: "Yet to be implemented" });
+    const title = req.params.title;
+    let works = { "booksbytitle": [] };
+
+    Object.keys(books).forEach(key => {
+        if (books[key].title == title) {
+            works.booksbytitle.push({
+                "isbn": key,
+                "author": books[key].author,
+                "reviews": books[key].reviews
+            });
+        }
+    });
+    
+    if(works.booksbytitle.length > 0) {
+        return res.status(200).json(works);
+    } else {
+        return res.status(404).json({ message: "No item found!" });
+    }
 });
 
 //  Get book review
